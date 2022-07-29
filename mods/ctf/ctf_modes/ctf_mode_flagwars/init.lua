@@ -51,7 +51,9 @@ ctf_modebase.register_mode("flagwars", {
 		ctf_modebase.capture_flag(player)
 	end,
 	on_flag_drop = function() end,
-	on_flag_capture = features.on_flag_capture,
+	on_flag_capture = function (player, team)
+		return features.on_flag_capture(player, team, function() end)
+	end,
 	on_flag_rightclick = function() end,
 	get_chest_access = features.get_chest_access,
 	can_punchplayer = features.can_punchplayer,

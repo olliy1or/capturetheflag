@@ -330,7 +330,7 @@ return {
 
 		playertag.set(player, playertag.TYPE_ENTITY)
 	end,
-	on_flag_capture = function(player, teamnames)
+	on_flag_capture = function(player, teamnames, allocate_captured_team_func)
 		local pname = player:get_player_name()
 		local pteam = ctf_teams.get(pname)
 		local tcolor = ctf_teams.team[pteam].color
@@ -383,11 +383,15 @@ return {
 
 			ctf_modebase.start_new_match(5)
 		else
-			for _, lost_team in ipairs(teamnames) do
-				table.remove(team_list, table.indexof(team_list, lost_team))
+			if allocate_captured_team_func then
+				allocate_captured_team_func()
+			else
+				for _, lost_team in ipairs(teamnames) do
+					table.remove(team_list, table.indexof(team_list, lost_team))
 
-				for lost_player in pairs(ctf_teams.online_players[lost_team].players) do
-					ctf_teams.allocate_player(lost_player)
+					for lost_player in pairs(ctf_teams.online_players[lost_team].players) do
+						ctf_teams.allocate_player(lost_player)
+					end
 				end
 			end
 		end
