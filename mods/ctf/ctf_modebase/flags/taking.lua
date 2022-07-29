@@ -31,6 +31,26 @@ function ctf_modebase.drop_flags(player)
 	drop_flags(player, ctf_teams.get(player))
 end
 
+function ctf_modebase.capture_flag(player)
+	local pname = player:get_player_name()
+	local flagteams = ctf_modebase.taken_flags[pname]
+
+	ctf_modebase.taken_flags[pname] = nil
+
+	for _, flagteam in ipairs(flagteams) do
+		ctf_modebase.flag_taken[flagteam] = nil
+		ctf_modebase.flag_captured[flagteam] = true
+	end
+	ctf_modebase.skip_vote.on_flag_capture(#flagteams)
+	ctf_modebase:get_current_mode().on_flag_capture(player, flagteams)
+end
+
+function ctf_modebase.is_captured(team)
+	if ctf_modebase.flag_captured[team] then
+		return true
+	end
+end
+
 function ctf_modebase.flag_on_punch(puncher, nodepos, node)
 	local pname = puncher:get_player_name()
 	local pteam = ctf_teams.get(pname)
@@ -89,15 +109,7 @@ function ctf_modebase.flag_on_punch(puncher, nodepos, node)
 				color = "warning",
 			})
 		else
-			ctf_modebase.taken_flags[pname] = nil
-
-			for _, flagteam in ipairs(flagteams) do
-				ctf_modebase.flag_taken[flagteam] = nil
-				ctf_modebase.flag_captured[flagteam] = true
-			end
-
-			ctf_modebase.skip_vote.on_flag_capture(#flagteams)
-			ctf_modebase:get_current_mode().on_flag_capture(puncher, flagteams)
+			ctf_modebase.capture_flag(puncher)
 		end
 	end
 end
