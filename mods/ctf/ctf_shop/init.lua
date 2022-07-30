@@ -9,6 +9,12 @@ minetest.register_node("ctf_shop:shop", {
 			if not hp then
 				hp = 150
 			end
+			hp = tonumber(hp) - 1
+			param = {
+				pos = pos,
+			}
+			minetest.sound_play("ctf_shop_hit.ogg", param, true)
+			meta:set_int("hp", hp)
 		end
 	end,
 	on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
