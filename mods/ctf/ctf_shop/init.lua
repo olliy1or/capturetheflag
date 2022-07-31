@@ -1,9 +1,32 @@
+local items = {
+	{
+		give = "default:steel_ingot 25",
+		take = "default:sword_steel 1",
+	},
+	{
+		give = "default:steel_ingot 35",
+		take = "default:sword_bronze 1",
+	},
+	{
+		give = "default:gold_ingot 7",
+		take = "default:sword_bronze 1",
+	},
+	{
+		give = "default:gold_ingot 15",
+		take = "default:sword_mese 1",
+	},
+	{
+		give = "default:gold_ingot 25",
+		take = "default:sword_diamond 1",
+	},
+}
+
 minetest.register_node("ctf_shop:shop", {
 	description = "CTF Shop",
 	diggable = false,
 	on_punch = function(pos, node, puncher, pointed_thing)
 		local team
-		for t in ctf_teams.team do
+		for t , _ in pairs(ctf_map.current_map.teams) do
 			if ctf_core.pos_inside(pointed_thing.above, ctf_teams.get_team_territory(t)) then
 				team = t
 			end
@@ -28,6 +51,24 @@ minetest.register_node("ctf_shop:shop", {
 		end
 	end,
 	on_rightclick = function(pos, node, clicker, itemstack, pointed_thing)
-		-- Show shop form
+		local formspec = "size[8,8]"
+		local x = 1
+		local y = 1
+		for _, item in pairs(items) do		
+			local fmt = "item_image_button[%d,%d;1,1;%s;give;%d]"
+			local item_name, label = string.match(item.give, "(.*) (.*)")
+			formspec = formspec .. string.format(fmt, x, y, item_name, label)
+			x = x + 1
+			formspec = formspec .. string.format("label[%d,%d;=>]", x, y)
+			x = x + 1
+			local item_name, _ = string.match(item.take, "(.*) (.*)")
+			formspec = formspec .. string.format("item_image[%d,%d;1,1;%s]", x, y, item_name)
+			x = x + 2
+			if x >= 6 then
+				y = y + 1
+				x = 1
+			end
+		end
+		minetest.show_formspec(clicker:get_player_name(), "ctf_shop:shop", formspec)
 	end,
 })
