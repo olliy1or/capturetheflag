@@ -21,6 +21,14 @@ local items = {
 	},
 }
 
+local swords_hitpoint = {
+	{ sword = "default:sword_stone", hp = 1 },
+	{ sword = "default:sword_bronze", hp = 6 },
+	{ sword = "default:sword_steel", hp = 4 },
+	{ sword = "default:sword_mese", hp = 10 },
+	{ sword = "default:sword_diamond" , hp = 12},
+}
+
 minetest.register_node("ctf_shop:shop", {
 	description = "CTF Shop",
 	diggable = false,
@@ -37,16 +45,27 @@ minetest.register_node("ctf_shop:shop", {
 			if not hp then
 				hp = 150
 			end
-			hp = tonumber(hp) - 1
-			param = {
+			local tool = puncher:get_wielded_item():get_name()
+			minetest.chat_send_all(tool)
+			local dmg = 0
+			for _, sword_hp in pairs(swords_hitpoint) do
+				minetest.chat_send_all(sword_hp.sword)
+				if sword_hp.sword == tool then
+					dmg = sword_hp.hp
+				end
+			end
+			hp = tonumber(hp) - dmg
+			local param = {
 				pos = pos,
 				fade = (hp == 0 and -0.1 or 0.0),
 			}
-			minetest.sound_play("ctf_shop_hit.ogg", param, true)
+			if dmg > 0 then
+				minetest.sound_play("ctf_shop_hit", param, true)
+			end
 			if hp > 0 then
 				meta:set_int("hp", hp)
 			else
-				minetest.set_node(pos, "air")
+				minetest.set_node(pos, {name="air"})
 			end
 		end
 	end,
