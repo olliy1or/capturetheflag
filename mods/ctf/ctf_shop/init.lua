@@ -92,6 +92,7 @@ minetest.register_node("ctf_shop:shop", {
 				x = 1
 			end
 		end
-		minetest.show_formspec(clicker:get_player_name(), "ctf_shop:shop", formspec)
+		ctf_gui.old_init()
+		ctf_gui.old_show_formspec(clicker:get_player_name(), "ctf_shop:shop", formdef)
 	end,
 })
