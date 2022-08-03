@@ -1,0 +1,2 @@
+ - code by farooqkz under LGPLv2.1 or at your option any later version
+ - hit sound from https://soundbible.com/215-Cow-Mooing.html under CC-BY 3.0
