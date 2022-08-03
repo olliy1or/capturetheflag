@@ -19,6 +19,10 @@ local items = {
 		give = "default:gold_ingot 25",
 		take = "default:sword_diamond 1",
 	},
+	{
+		give = "default:apple 1",
+		take = "default:steel_ingot 1",
+	}
 }
 
 local swords_hitpoint = {
